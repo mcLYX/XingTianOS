@@ -1,0 +1,1 @@
+{'Home': 'nhome\n', 'Brightness': 1, 'Hotspot': ['YanfeiAyaka', ''], 'Freq': 160000000, 'Wifi': {'smyz0208': 'smyz0208', 'dlink': 'lzg13055541562'}, 'BootWifi': 'smyz0208'}
