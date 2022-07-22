@@ -2,6 +2,9 @@
 A ugly  os-like UI launcher(???)  for .py files in MicroPython.
 
 
+XtOS
+
+
 
 ESP32C3的板子直接上传就完事，可能要在$LIB$文件夹补上mpy官方的ssd1306.py和urequests.py
 
