@@ -22,8 +22,8 @@ def lstui(fcs=[''],head='',fc=0):
       t1=tk()
       while tk()-t1<64:lst(int(2*(tk()-t1)),(tk()-t1)//4,(tk()-t1)//8)
       fc+=1
-def ime():
-  sel,stat,w=0,0,''
+def ime(w=''):
+  sel,stat=0,0
   while 1:
     f(0)
     for i in range(32,128):
