@@ -1,11 +1,18 @@
 import lstui,scr,machine,config
 sel=0
 while 1:
-  sel=lstui.lstui(('Wi-Fi',[1449,1184],[616,717,380,611],[1303,1304],[267,1205,1173],
+  sel=lstui.lstui(('Wi-Fi',[1449,1184],[616,717],[1303,1304],[267,1205,1173],
                    [297,1477,2287,311],[472,20],'LCD DispPos',[675,389,'...']),[494,2197],sel)[1]
   if sel==0:exec(open('wific.py').read())
   elif sel==1:exec(open('hotc.py').read())
-  elif sel==2:exec(open('tsync.py').read(),{})
+  elif sel==2:
+      if lstui.qna([[616,717]],[[112,313,494,2197],[1942,394,1459,831]]):
+          try:
+            setTime=int(lstui.ime('Year:20')[5:]),int(lstui.ime('Month:')[6:]),int(lstui.ime('Day:')[4:]),0,int(lstui.ime('Hour:')[5:]),int(lstui.ime('Minute:')[7:]),0,0
+            machine.RTC().datetime(setTime)
+            del setTime
+          except:print('无效时间')
+      else:exec(open('tsync.py').read(),{})
   elif sel==3:
     nv=(1,31,79,143,255)[lstui.lstui(([1989,664],[664],[104],[1594],[1989,1594]),[1303,1304],4)[1]]
     config.write('Brightness',nv)
