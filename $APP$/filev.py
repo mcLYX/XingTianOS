@@ -8,7 +8,7 @@ while 1:
     if 0<t[1]<5:
       for i in os.listdir(d):
         j=i.split('.')[-1]
-        if j in(['bmp','pbm','rgb'],['hla'],['pwm'],['txt'])[t[1]-1]:
+        if j in(['bmp','pbm','rgb','qoi'],['hla'],['pwm'],['txt'])[t[1]-1]:
           g.append(i)
     elif t[1]==0:
       types=[]
@@ -52,6 +52,8 @@ while 1:
       elif fn=='.rgb':
         import rgbds;scr.f(0);scr.s();rgbds.rgb(fd)
         if touch.prstime():rgbds.rgb(fd,0,63)
+      elif fn=='.qoi':
+        exec(open('../$LIB$/qoids.py').read(),{'FileNAME':fd})
       elif '.py'in fn:
         try:
           exec(open(fd).read(),{})
