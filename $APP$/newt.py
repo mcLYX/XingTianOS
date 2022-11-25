@@ -68,18 +68,9 @@ while 1:
         #按键按下后
         if tqstat:
             G=-G
+                
+        h=min(56,max(0,h+fspd*tuse))
         
-        if h>=0 and h<=56:
-            if fspd*G>=0:
-                fspd+=G*tuse
-            else:
-                fspd=0
-        h+=fspd*tuse
-        if h<0:
-            h=0
-        if h>56:
-            h=56
-            
         #画画
         f(0)
         for i in level:
@@ -106,7 +97,8 @@ while 1:
     elif score<20000:rank='B'
     elif score<30000:rank='A'
     elif score<50000:rank='S'
-    elif score<100000:rank='S+'
+    elif score<70000:rank='SS'
+    elif score<100000:rank='SSS'
     else:rank='人否？'
     
     dscn.cn('本局得分:'+str(score))
@@ -114,15 +106,13 @@ while 1:
     
     if score>=record:
         dscn.cn('新纪录！',y=26)
+        fi=open('../$DAT$/newtonr','w')
+        fi.write(str(score))
+        fi.close()
     else:
         dscn.cn('纪录:'+str(record),y=26)
-        
+    
     dscn.cn('轻触重试',40,52)
     
     invert(0)
     s()
-    if touch.prstime():
-        fi=open('newtonr','w')
-        fi.write(str(record))
-        fi.close()
-        break
