@@ -68,7 +68,13 @@ while 1:
         #按键按下后
         if tqstat:
             G=-G
-                
+        
+        if h>=0 and h<=56:
+            if fspd*G>=0:
+                fspd+=G*tuse
+            else:
+                fspd=0
+
         h=min(56,max(0,h+fspd*tuse))
         
         #画画
@@ -116,3 +122,4 @@ while 1:
     
     invert(0)
     s()
+    if touch.prstime():break
