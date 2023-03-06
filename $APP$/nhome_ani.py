@@ -6,7 +6,7 @@ t=ms()
 while ms()-t<spd:
     pos=64-int(cos((ms()-t)/spd*pi/2)*64)
     m(0,pos);_(0,0,128,pos,0);s();m(0,-pos)
-    print(pos)
+    #print(pos)
 t=ms()
 while ms()-t<spd:
     i=64-int(sin((ms()-t)/spd*pi/2)*64)

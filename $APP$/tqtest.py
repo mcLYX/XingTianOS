@@ -1,6 +1,6 @@
 from scr import s,t,f,l
 from volt import volt
-import touch
+import touch,time
 from machine import Pin, PWM
 a=[]
 mode=touch.d()

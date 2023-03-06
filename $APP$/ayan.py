@@ -19,6 +19,7 @@ while 1:
   dscn.cn(jsd[0][30:],y=39)
   dscn.cn('--'+jsd[1],y=52)
   scr.s()
+  print(jsd[0],'——',jsd[1])
   ay.close()
   #machine.WDT().feed()
   for i in range(5):

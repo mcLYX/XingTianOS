@@ -3,21 +3,21 @@ import time
 slp=time.sleep
 tk=time.ticks_ms
 from scr import f,s,t,_
-from dscn import leng,dscd
+from dscn import leng,dscd,tran
 c,l=dscd,leng
-def lstui(fcs=[''],head='',fc=0):
+def lstui(fcs=[''],head='',fc=0,tr=0):
+  if tr:fcs2,fcs,head=fcs,[(tran(i) if isinstance(i,str) else i) for i in fcs],tran(head) if isinstance(head,str) else head
   f(0);c(head,64-l(head)//2,0);t('-'*16,0,10)
   def lst(a,b,k):
     p=[fcs[fc%len(fcs)],fcs[(fc+1)%len(fcs)]]
     _(0,14,128,50,0)
     c(p[0],64-l(p[0])//2+a,18,mv=(-2,1));t('-'*16,0,26)
     c(p[1],int((64-l(p[1])/2)*(b/18)),36-b)
-    for i in (2,3,4):
-      c(fcs[(fc+i)%len(fcs)],0,27+i*9-k)
+    for i in 2,3,4:c(fcs[(fc+i)%len(fcs)],0,27+i*9-k)
     s()
   while 1:
     lst(0,0,0)
-    if prstime():return [fcs[fc%len(fcs)],fc%len(fcs)]
+    if prstime():return [fcs2[fc%len(fcs)] if tr else fcs[fc%len(fcs)],fc%len(fcs)]
     else:
       t1=tk()
       while tk()-t1<64:lst(int(2*(tk()-t1)),(tk()-t1)//4,(tk()-t1)//8)

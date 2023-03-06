@@ -1,4 +1,4 @@
-import pbmds,scr
+import pbmds,scr,framebuf
 dex,font,uns=open('c2k.lib'),open('c2k.bmf','rb'),0
 def leng(t):
   k=0
@@ -26,16 +26,15 @@ def tran(t,f=dex,s=100):
     else:code+=[i]
   del t
   return code
-def dscd(code,x=0,y=0,f=font,mv=(0,3)):
+def dscd(code,x=0,y=0,f=font,mv=(0,3),bf=scr.o,a=0,c=65535,p=framebuf.FrameBuffer(bytearray([0,0,255,255]),2,1,framebuf.RGB565)):
   if isinstance(code,str):
-    scr.t(code,x,y);return 8*len(code)
+    bf.text(code,x,y,c);return 8*len(code)
   for i in code:
     if isinstance(i,str):
-      scr.t(i,x,y+mv[1]);x+=8*len(i)
+      bf.text(i,x,y+mv[1],c);x+=8*len(i)
     else:
       f.seek(24*i)
-      scr._(x,y+mv[0],12,12,1)
-      scr.b(wdfb(f),x,y+mv[0]);x+=12
+      bf.blit(wdfb(f),x,y+mv[0],a,p);x+=12
   return x
 wdfb=lambda f:pbmds.getfb(f,12,12,24)
 cn=lambda t,x=0,y=0,f=dex,s=64:dscd(tran(t,f,s),x,y)

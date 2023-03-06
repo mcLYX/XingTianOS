@@ -1,6 +1,6 @@
 #传入参数：FileNAME
 from scr import s,h
-import time,touch,lstui
+import time,touch,lstui,zlib
 def v(v):
   global rt
   for i in range(32):
@@ -18,11 +18,13 @@ def v(v):
   #while time.ticks_ms()-rt<90:pass
 def play(fi):
   global avg,rt
-  g,a=open(fi,'rb'),0
+  g,a=open(fi,'rb') if '.zla' not in fi else zlib.DecompIO(open(fi,'rb')),0
   while touch.detect():
     pass
   rt=time.ticks_ms()
-  for i in g:
+  i=1
+  while i:
+    i=g.readline()
     a+=1
     avg=(time.ticks_ms()-rt)//a
     if avg<101:v(i)

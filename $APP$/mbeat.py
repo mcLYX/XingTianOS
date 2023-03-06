@@ -1,8 +1,8 @@
 from scr import *
-import touch,machine,rd,time,lstui,dscn
+import touch,machine,rd,time,lstui,dscn,key4
 a=machine.Pin(2)
-L=touch.d
-R=a.value
+L=lambda:key4.get(1) or key4.get(2)
+R=lambda:key4.get(3) or key4.get(4)
 LSTAT=0
 RSTAT=0
 HP=100

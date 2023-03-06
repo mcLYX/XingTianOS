@@ -1,6 +1,6 @@
 import machine,scr,dscn,lstui,touch,os
 
-uart=machine.UART(0,baudrate=9600)
+uart=machine.UART(1,tx=18,rx=16,baudrate=9600)
 #uart2=machine.UART(1,baudrate=9600)
 os.dupterm(None)
 
@@ -32,7 +32,7 @@ while 1:
     elif a==4:ctrl(rdplay)
     elif a==5:ctrl(cyplay)
     elif a==6:ctrl(xinao)
-    elif a==7:vol(lstui.lstui(('0','5','10','15','20','25','30','35'),'VOL',6)[1]*5)
+    elif a==7:vol(lstui.lstui(('0','5','10','15','20','25','30'),'VOL',6)[1]*5)
     else:break
     scr.f(0)
     scr.t('OK',0,0)

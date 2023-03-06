@@ -1,5 +1,12 @@
-from scr import f,s,t,r,c,_,i
-import touch,rd,time
+import os
+os.chdir('/$LIB$')
+
+from PRECONFIG import LCD_SIZE as size
+from scr import scrType,f,s,t,r,c,_,i
+import touch,rd,time,Run,gc
+if scrType=='LCD' and size[0]>=240 and size[1]>=120 and gc.mem_free()>999999:
+  Run.run('dinop')
+  raise
 from math import sin,cos,pi
 rdi=rd.rdi#,(6,11,17,21,25,28,29,30,29,28,25,21,17,11,6)#(8,15,21,26,29,30,29,26,21,15,8)
 tuse=1

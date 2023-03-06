@@ -27,7 +27,7 @@ def bmp(fn,r=2,cd=0):
           flip = True
         w,h=width,height
         w,h=min(128,w),min(160,h)
-        tft._setwindowloc((0,0),(w - 1,h - 1))
+        tft.setarea((0,0),(w - 1,h - 1))
         if cd:
             f2=open(fn.split('.')[0]+'.rgb','wb')
             f2.write((str(width)+' '+str(height)+'\n').encode())
