@@ -75,5 +75,5 @@ for f in flist:
         w.write(bytes(decode,encoding='ascii'))
     '''
     print('转换完成：'+f)
-    
+
 input('OK')
