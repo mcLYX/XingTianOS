@@ -1,4 +1,4 @@
-pos=(0,48),(127,111)
+pos=(0,0),(239,239)
 color=lambda R=0,G=0,B=0 : (R//8<<3) + (G//4>>3) + (G//4%8<<13) + (B//8<<8)
 try:
   from ssd1306 import SSD1306_I2C
@@ -10,6 +10,8 @@ try:
   scrType='OLED'
 except:
   import framebuf,tft,gc
+  from PRECONFIG import LCD_SIZE as size
+  pos=(size[0]//2-64,size[1]//2-32),(size[0]//2+63,size[1]//2+31)
   tft.fill()
   o=framebuf.FrameBuffer(bytearray(128*64*2),128,64,framebuf.RGB565)
   def s(rs=1):
@@ -25,7 +27,7 @@ except:
   v=lambda x=0,y=0,l=64,c=1:o.vline(x,y,l,65535 if c==1 else c)
   _=lambda x1=0,y1=0,x2=128,y2=64,c=1:o.fill_rect(x1,y1,x2,y2,65535 if c==1 else c)
   r=lambda x1=0,y1=0,x2=128,y2=64,c=1:o.rect(x1,y1,x2,y2,65535 if c==1 else c)
-  b=lambda f,x,y,a=1:o.blit(f,x,y,a)
+  b=lambda f,x,y,a=-1,c=framebuf.FrameBuffer(bytearray([0,0,255,255]),2,1,framebuf.RGB565):o.blit(f,x,y,a,c)
   m=o.scroll
   c=int
   print('LCD READY')

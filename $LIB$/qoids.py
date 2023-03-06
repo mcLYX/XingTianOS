@@ -1,8 +1,7 @@
 #打开文件,传入FileNAME
 
 import os,time,touch,tft,scr
-f=open(FileNAME,'rb')
-scr.f(0);scr.s()
+scr.f(0)
 
 #解码配置设置
 bytemin=8#加载的最少字节数(8,不要改,除非QOI规范变了)
@@ -17,7 +16,7 @@ def rgb565(bgr=None):
     tft.dc(1)
     try:
       tft.spi.write(cache565)
-      del cache565
+      cache565=b''
     except:
       pass
     return
@@ -30,14 +29,17 @@ def rgb565(bgr=None):
     tft.dc(1)
     tft.spi.write(cache565)
     cache565=b''
-    
+
 t=time.ticks_ms()
+f=open(FileNAME,'rb')
 
 #检测文件头
 if f.read(4)!=b'qoif':
   f.close()
   del f
   print('不是一个有效的QOI文件')
+  scr.t('INVALID FILE!',0,0)
+  scr.s()
 else:
   #获取图像信息
   w=f.read(4)
