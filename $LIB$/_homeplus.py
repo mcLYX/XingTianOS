@@ -18,12 +18,11 @@ s,f,_,b,m,o,t=Scr.s,Scr.f,Scr._,Scr.b,Scr.m,Scr.o,Scr.t
 
 def getBG():
     global bg,bgc,frc,color,color2
-    with open('../$DAT$/Config/homep_cfg') as cfg:
-        bgc=int(cfg.readline())
-        frc=int(cfg.readline())
-        color=c2fb(bgc)
-        color2=c2fb(frc)
-        bg=mlgl.Spirit(framebuf.FrameBuffer(*tft.jpg_decode(cfg.readline()),framebuf.RGB565),o)
+    bgc,frc,bgf=config.read('homep_cfg').split('\n')
+    bgc,frc=int(bgc),int(frc)
+    color=c2fb(bgc)
+    color2=c2fb(frc)
+    bg=mlgl.Spirit(framebuf.FrameBuffer(*tft.jpg_decode(bgf),framebuf.RGB565),o)
 try:getBG()
 except:import home
 
