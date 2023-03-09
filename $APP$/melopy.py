@@ -90,6 +90,7 @@ def checkotn(t):#检查超时(miss/已结束Hold)note
             dnote(t,i,holds[i]-1)
             holds[i]=0
 
+@micropython.native
 def shownote(t):#显示画面
     global hitfb
     scr.o.fill(0)
@@ -121,6 +122,7 @@ def dnote(t,col,reason):#记录并删除某轨道最近的note
     del notes[col][0]
 
 def chktp(t,i):#检查Tap和Hold头判
+    global hitfb
     last=notes[i][0]
     if isinstance(last,int):#TAP
         delta=abs(last-t)
@@ -129,11 +131,9 @@ def chktp(t,i):#检查Tap和Hold头判
         elif delta<badms:dnote(t,i,2)#Bad/POOR
     else:#HOLD头判
         delta=abs(last[0]-t)
-        if delta<perfms:holds[i]=1#Perfect/Best
-        elif delta<goodms:holds[i]=2#Good
-        elif delta<badms:#Bad/Poor
-            holds[i]=0
-            dnote(t,i,2)
+        if delta<perfms:holds[i]=1;hitfb=(0,t)#Perfect/Best
+        elif delta<goodms:holds[i]=2;hitfb=(1,t)#Good
+        elif delta<badms:holds[i]=0;dnote(t,i,2)#Bad/Poor
 
 def panding(t,kstat,prsk):#检查判定
     for i in range(4):
@@ -141,11 +141,10 @@ def panding(t,kstat,prsk):#检查判定
         if kstat[i] and notes[i]:chktp(t,i)
         #Hold持续判定
         if holds[i] and not prsk[i]:
-            if notes[i][0][1]-t>goodms:#如果提前松手超过good判定范围，直接poor
-                holds[i]=0
-                dnote(t,i,2)
-            elif notes[i][0][1]-t>perfms:#如果不超过good范围，但超过best范围，改判good
-                holds[i]=2
+            if notes[i][0][1]-t>goodms:dnote(t,i,2)#如果提前松手超过good判定范围，直接poor
+            elif notes[i][0][1]-t>perfms:dnote(t,i,1)#如果不超过good范围，但超过best范围，改判good
+            else:dnote(t,i,holds[i]-1)#松的挺准，保持原判
+            holds[i]=0
 
 def result():
     global song,chart,d
