@@ -3,7 +3,7 @@ A ugly  os-like UI launcher(???)  for .py files in MicroPython.
 
 
 XtOS
-![](https://s3.bmp.ovh/imgs/2022/07/23/b43d760b5a924ce1.webp)
+![](https://s3.bmp.ovh/imgs/2023/03/09/d055ccee1e6a07f7.webp)
 
 
 
