@@ -1,17 +1,9 @@
-cfgdir='../$DAT$/Config/'
+import btree
+cfgfile=open('../$DAT$/Config.db','r+b')
+db=btree.open(cfgfile)
 def write(name,value=0):
-    f=open(cfgdir+name,'w')
-    f.write(str(value))
-    f.close()
-    del f
+    db[name]=value
+    db.flush()
 def read(name=None):
-    if name:
-        try:f=open(cfgdir+name)
-        except:return
-        re=f.read()
-        f.close()
-        del f
-    else:
-        re=None
-    return re
-        
+    try:return db[name].decode()
+    except:return
