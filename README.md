@@ -1,4 +1,4 @@
-# XingTianOS
+# XingTianOS （此OS非彼OS，只可意会不可言传）
 A ugly  os-like UI launcher(???)  for .py files in MicroPython.
 
 
