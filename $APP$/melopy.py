@@ -28,8 +28,8 @@ songsel=['',0]
 pause=0#暂停计数器
 uart=machine.UART(1,tx=18,rx=16,baudrate=9600)
 volume=15#音量
-delay=-10#音频延迟
-dspbuf=1.002#谱面速度修正
+delay=-40#音频延迟
+dspbuf=1.0018#谱面速度修正
 
 def ctrl(com):
     uart.write(bytes((0x7e,0xff,0x06))+com+bytes([0xef]))
