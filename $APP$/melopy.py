@@ -65,7 +65,7 @@ def lennote():#获取场上note数量
 def acc():#更新ACC
     global accu
     total=sum(record[:-2])
-    accu=f"{(abs(record[0]/total+record[1]/(2*total))*100-0.005):.2f}%" if total else '100.00%'
+    accu=f"{(abs((record[0]/total+record[1]/(2*total))*100-0.005)):.2f}%" if total else '100.00%'
 
 def loadnote():#加载下一个note
     load=file.readline().split()
@@ -118,7 +118,7 @@ def shownote(t):#显示画面
 
 def dnote(t,col,reason):#记录并删除某轨道最近的note
     global hitfb
-    record[reason]+=1
+    record[reason%4]+=1
     acc()
     hitfb=(reason,t)
     record[5]=record[5]+1 if reason<=1 else 0
@@ -158,7 +158,7 @@ def result():
     dscn.dscd(dscn.tran(chart),0,13,bf=scr.o)
     scr.t('ACC: '+accu+('','+','++')[diffc],0,sh-8,1)
     scr.s()
-    if sh<120 and touch.prstime():return
+    if sh<128 and touch.prstime():return
 
     labels,y_pos,colors=['BEST','GOOD','POOR','MISS','Combo'],[40,49,58,67,76],[c2,c,c3,c3,7]
     for i in range(len(labels)):scr.t(f'{labels[i]} {str(record[i])}',0,y_pos[i],colors[i])
@@ -167,7 +167,7 @@ def result():
     for i in range(7):
         if float(accu[:-1])>=(100,98,95,90,80,70,0)[i]:
             icon=pbmds.dcd(d+'ICON/'+icons[i]+'.pbm')
-            scr.b(icon,sw-64,32,0,c2fb([c2,c2,c2,c,7,65535,c3][i]))
+            scr.b(icon,sw-64,36,0,c2fb([c2,c2,c2,c,7,65535,c3][i]))
             break
     scr.s()
     touch.prstime()
