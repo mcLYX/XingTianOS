@@ -118,7 +118,8 @@ def shownote(t):#显示画面
 
 def dnote(t,col,reason):#记录并删除某轨道最近的note
     global hitfb
-    record[reason%4]+=1
+    reason%=4
+    record[reason]+=1
     acc()
     hitfb=(reason,t)
     record[5]=record[5]+1 if reason<=1 else 0
@@ -160,14 +161,14 @@ def result():
     scr.s()
     if sh<128 and touch.prstime():return
 
-    labels,y_pos,colors=['BEST','GOOD','POOR','MISS','Combo'],[40,49,58,67,76],[c2,c,c3,c3,7]
+    labels,y_pos,colors=['BEST','GOOD','POOR','MISS','Combo'],[40,50,60,70,84],[c2,c,c3,c3,7]
     for i in range(len(labels)):scr.t(f'{labels[i]} {str(record[i])}',0,y_pos[i],colors[i])
 
     icons=('您','S+','S','A','B','C','F')
     for i in range(7):
         if float(accu[:-1])>=(100,98,95,90,80,70,0)[i]:
             icon=pbmds.dcd(d+'ICON/'+icons[i]+'.pbm')
-            scr.b(icon,sw-64,36,0,c2fb([c2,c2,c2,c,7,65535,c3][i]))
+            scr.b(icon,sw-64,34,0,c2fb([c2,c2,c2,c,7,65535,c3][i]))
             break
     scr.s()
     touch.prstime()
