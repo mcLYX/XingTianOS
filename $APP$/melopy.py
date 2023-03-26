@@ -117,7 +117,7 @@ def shownote(t):#显示画面
     scr.s(0)
 
 def dnote(t,col,reason):#记录并删除某轨道最近的note
-    global hitfb,combo
+    global hitfb
     record[reason]+=1
     acc()
     hitfb=(reason,t)
@@ -149,7 +149,7 @@ def panding(t,kstat,prsk):#检查判定
             if delta>goodms:dnote(t,i,2)#如果提前松手超过good判定范围，直接poor
             elif delta>perfms:dnote(t,i,1)#如果不超过good范围，但超过best范围，改判good
             else:dnote(t,i,holds[i]-1)#松的挺准，保持原判
-            holds[i]=0 
+            holds[i]=0
 
 def result():
     global song,chart,d
