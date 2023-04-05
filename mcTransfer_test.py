@@ -26,7 +26,7 @@ for f in flist:
         continue
 
     offset1=0
-    decode=''
+    decode=[]
     try:
         if 'offset' in b['note'][-1]:
             offset1=b['note'][-1]['offset']
@@ -52,13 +52,29 @@ for f in flist:
                 endbf=i['endbeat'][1]
                 endd=i['endbeat'][2]#结束小节
                 endtime= 1000 * ( endxj * jielen + jielen * (endbf * ( 1 / endd)) ) - offset
-                endtime=' '+str(round(endtime))
+                #endtime=' '+str(round(endtime))
             except:
                 endtime=''
             column=i['column']
-            decode += str(round(notetime)) + ' ' + str(column) + endtime + '\n'
+            decode.append((round(notetime), column)+((round(endtime),) if endtime else ()))# += str(round(notetime)) + ' ' + str(column) + endtime + '\n'
     except:
         pass
+    
+    #ChatGPT整挺好
+    def sort_mixed_list(lst):
+        lst.sort(key=lambda x: x[0] if isinstance(x, (tuple, list)) else x)
+        return lst
+    
+    decode=sort_mixed_list(decode)
+    
+    outputstr=''
+    for i in decode:
+        if len(i)==3:
+            outputstr+=str(i[0]) + ' ' + str(i[1]) + ' ' + str(i[2]) + '\n'
+        else:
+            outputstr+=str(i[0]) + ' ' + str(i[1]) + '\n'
+            
+    decode=outputstr
     
     try:
         os.mkdir('Melopy_Charts/'+b['meta']['song']['title'])
@@ -75,5 +91,5 @@ for f in flist:
         w.write(bytes(decode,encoding='ascii'))
     '''
     print('转换完成：'+f)
-
+    
 input('OK')
