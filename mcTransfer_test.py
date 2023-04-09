@@ -83,7 +83,7 @@ for f in flist:
             TITLE=TITLE.replace(char, " ")
             VERSION=VERSION.replace(char, " ")
         TITLE=TITLE.strip()
-        VERSION=VERSION..strip()
+        VERSION=VERSION.strip()
         os.mkdir('Melopy_Charts/'+TITLE)
         songid=input('发现新曲目:'+TITLE+',请输入歌曲在TF卡中的ID：')
         with open('Melopy_Charts/'+TITLE+'/songid.txt','w') as w:
