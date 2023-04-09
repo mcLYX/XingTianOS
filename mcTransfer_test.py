@@ -91,7 +91,7 @@ for f in flist:
     except:
         pass
 
-    with open('Melopy_Charts/'+TITLE+'/'+b['meta']['version']+'.mpc','wb') as w:
+    with open('Melopy_Charts/'+TITLE+'/'+VERSION+'.mpc','wb') as w:
         w.write(zlib.compress(bytes(decode,encoding='ascii'),9))
     '''  
     with open('Melopy_Charts/'+b['meta']['song']['title']+'/'+b['meta']['version']+'.mpo','wb') as w:
