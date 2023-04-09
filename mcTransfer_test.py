@@ -77,14 +77,21 @@ for f in flist:
     decode=outputstr
     
     try:
-        os.mkdir('Melopy_Charts/'+b['meta']['song']['title'])
-        songid=input('发现新曲目:'+b['meta']['song']['title']+',请输入歌曲在TF卡中的ID：')
-        with open('Melopy_Charts/'+b['meta']['song']['title']+'/songid.txt','w') as w:
+        TITLE=b['meta']['song']['title']
+        VERSION=b['meta']['version']
+        for char in "?_/\\*\"'<>|":
+            TITLE=TITLE.replace(char, " ")
+            VERSION=VERSION.replace(char, " ")
+        TITLE=TITLE.strip()
+        VERSION=VERSION..strip()
+        os.mkdir('Melopy_Charts/'+TITLE)
+        songid=input('发现新曲目:'+TITLE+',请输入歌曲在TF卡中的ID：')
+        with open('Melopy_Charts/'+TITLE+'/songid.txt','w') as w:
             w.write(songid)
     except:
         pass
 
-    with open('Melopy_Charts/'+b['meta']['song']['title']+'/'+b['meta']['version']+'.mpc','wb') as w:
+    with open('Melopy_Charts/'+TITLE+'/'+b['meta']['version']+'.mpc','wb') as w:
         w.write(zlib.compress(bytes(decode,encoding='ascii'),9))
     '''  
     with open('Melopy_Charts/'+b['meta']['song']['title']+'/'+b['meta']['version']+'.mpo','wb') as w:
