@@ -17,23 +17,23 @@ else:
 import dstxt,key4,zlib,touch,time,lstui,dscn,pbmds,framebuf,machine
 
 d='../$DAT$/Melopy/'
-maxload=16 #最大加载note数
+maxload=20 #最大加载note数
 c=color(128,255,255)#蓝色
 c2=color(255,255,128)#黄色
 c3=color(255,64,64)#红
-perfms=72#Perfect ms
-goodms=128
-badms=160
+perfms,goodms,badms=72,128,160#判定范围
 songsel=['',0]
 pause=0#暂停计数器
 uart=machine.UART(1,tx=18,rx=16,baudrate=9600)
 volume=15#音量
 delay=-50#音频延迟
-dspbuf=1.0015#谱面速度修正
+dspbuf=1.0018#谱面速度修正
 diffc=0#难度
 
-def ctrl(com):
-    uart.write(bytes((0x7e,0xff,0x06))+com+bytes([0xef]))
+ctrl=lambda com:uart.write(bytes((0x7e,0xff,0x06))+com+bytes([0xef]))#控制命令
+stop=lambda s=1:ctrl(bytes((0x0D+s,0x00,0x00,0x00)))#暂停
+vol=lambda value=15:ctrl(bytes((0x06,0x00,0x00,value)))#音量
+lennote=lambda:sum(len(i) for i in notes)#获取场上note数量
 
 def play(song,num=0):
     try:
@@ -42,12 +42,6 @@ def play(song,num=0):
             ctrl(bytes((0x0f,0x00,0x01, int(songid[num%len(songid)]) )))
     except:
         pass
-
-def stop(s=1):
-    ctrl(bytes((0x0D+s,0x00,0x00,0x00)))
-
-def vol(value=15):
-    ctrl(bytes((0x06,0x00,0x00,value)))
 
 def init():
     global notes,record,prskey,keystat,holds,hitfb,playing,accu
@@ -59,24 +53,19 @@ def init():
     playing=0#音乐已播放？
     accu='100.00%'#ACC
 
-def lennote():#获取场上note数量
-    return len(notes[0])+len(notes[1])+len(notes[2])+len(notes[3])
-
 def acc():#更新ACC
     global accu
     total=sum(record[:-2])
-    accu=f"{(abs((record[0]/total+record[1]/(2*total))*100-0.005)):.2f}%" if total else '100.00%'
+    accu=f"{(abs((record[0]/total+record[1]/(2*total))*100-0.005)):.2f}%"
 
 def loadnote():#加载下一个note
     load=file.readline().split()
     if len(load)==2:#Tap
         tick,col=load
-        tick,col=int(tick),int(col)
-        notes[col].append(tick)
+        notes[int(col)].append(int(tick))
     elif len(load)==3:#Hold
         tick,col,end=load
-        tick,col,end=int(tick),int(col),int(end)
-        notes[col].append((tick,end))
+        notes[int(col)].append((int(tick),int(end)))
     else:
         return 0
     return 1
@@ -110,7 +99,7 @@ def shownote(t):#显示画面
         scr.o.vline(sw//4+i*(sw//4),0,sh,65535)
         if prskey[i]:scr.o.fill_rect(i*sw//4,sh-nh+1,sw//4,nh-2,c2)
     scr.o.text(accu,1,2,7)
-    if record[5]>2:scr.o.text(str(record[5]),sw-1-len(str(record[5]))*8,2,c2)
+    if record[5]>2:scr.o.text(str(record[5]),sw-1-len(str(record[5]))*8,2,7)
     if hitfb:
         scr.o.text(('BEST','GOOD','POOR','MISS')[hitfb[0]],sw//2-16,45-(t-hitfb[1])//20,(c2,c,c3,c3)[hitfb[0]])
         if t-hitfb[1]>200:hitfb=[]
@@ -160,14 +149,12 @@ def result():
     scr.t('ACC: '+accu+('','+','++')[diffc],0,sh-8,1)
     scr.s()
     if sh<128 and touch.prstime():return
-
     labels,y_pos,colors=['BEST','GOOD','POOR','MISS','Combo'],[40,50,60,70,84],[c2,c,c3,c3,7]
     for i in range(len(labels)):scr.t(f'{labels[i]} {str(record[i])}',0,y_pos[i],colors[i])
-
     icons=('您','S+','S','A','B','C','F')
     for i in range(7):
         if float(accu[:-1])>=(100,98,95,90,80,70,0)[i]:
-            icon=pbmds.dcd(d+'ICON/'+icons[i]+'.pbm')
+            icon=pbmds.dcd(f'{d}ICON/{icons[i]}.pbm')
             scr.b(icon,sw-64,34,0,c2fb([c2,c2,c2,c,7,65535,c3][i]))
             break
     scr.s()
@@ -177,13 +164,12 @@ while 1:
     init()
     songsel=lstui.lstui([[1381,293,'...']]+os.listdir(d+'Charts/')+[[1641,1477],[719,1044,1693,1304],[1313,1990],[412,760]],'Select Music',songsel[1],1)
     song=songsel[0]
-    print(song)
     if song==[1381,293,'...']:break#退出
     if song==[1641,1477]:#流速
         mspx=0.1+lstui.lstui([str(i/100) for i in range(100,400+1,25)],'Speed',int((mspx-0.1)*40))[1]/40
         continue
     if song==[1313,1990]:#VOLUME
-        volume=lstui.lstui(('0','5','10','15','20','25','30'),'VOL',volume//5)[1]*5
+        volume=lstui.lstui('0 5 10 15 20 25 30'.split(),'VOL',volume//5)[1]*5
         continue
     if song==[719,1044,1693,1304]:#DIFFICULTY
         diffc=lstui.lstui(('Normal','Advanced','Extreme'),'Difficulty',diffc)[1]
@@ -191,20 +177,20 @@ while 1:
         continue
     if song==[412,760]:#延迟
         delay+=(0,10,-10,100,-100)[lstui.lstui(('KEEP','+10','-10','+100','-100'),'Delay:'+str(delay)+'ms',0)[1]]
+        dspbuf+=float(lstui.lstui(('0','+0.0001','-0.0001'),'Speed:'+str(dspbuf),0)[0])
         continue
     chartsel=lstui.lstui([i[:-4] for i in os.listdir(d+'Charts/'+song) if i[-4:]=='.mpc']+[[675,389,'...']],song,0,1)
     chart,songnum=chartsel
     del chartsel
     if chart==[675,389,'...']:continue
-    file=zlib.DecompIO(open(d+'Charts/'+song+'/'+chart+'.mpc','rb'))
+    file=zlib.DecompIO(open(f'{d}Charts/{song}/{chart}.mpc','rb'))
     scr.f(0)
     dscn.dscd(dscn.tran(song),0,0,bf=scr.o)
     dscn.dscd(dscn.tran(chart),0,13,bf=scr.o)
     scr.s()
     time.sleep(1)
-    scr.f(0)
     vol(volume)
-    start=time.ticks_ms()+1000
+    start=time.ticks_ms()+1024
     gc.collect()
     while 1:
         #fpsticker=time.ticks_us()
@@ -232,6 +218,7 @@ while 1:
             scr.s()
             if touch.prstime():break
             start+=time.ticks_ms()-pausetime
-            stop(0)
+            stop(playing==0)
         #print(1000000/(time.ticks_us()-fpsticker))
     if pause<10:result()
+    stop(1)
