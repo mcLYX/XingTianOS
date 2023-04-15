@@ -1,19 +1,21 @@
 # This file is executed on every boot (including wake-boot from deepsleep)\n#import esp\n#esp.osdebug(None)\n
-import webrepl,gc,network,machine
+import webrepl,gc,network,machine,btree
 machine.Pin(15,machine.Pin.OUT).on()
+config=open('/$DAT$/Config.db','r+b')
+db=btree.open(config)
 
-wifif=open('/$DAT$/Config/BootWifi')
-hsf=open('/$DAT$/Config/Hotspot')
-wssid=wifif.readline().rstrip()
-wpswd=wifif.readline()
-hssid=hsf.readline().rstrip()
-hpswd=hsf.readline()
-wifif.close()
-hsf.close()
-try:wireless=eval(open('/$DAT$/Config/Wireless').read())
+wifif=db['BootWifi'].decode().split('\n')
+hsf=db['Hotspot'].decode().split('\n')
+wssid,wpswd=wifif
+hssid,hpswd=hsf
+
+try:wireless=eval(open(db['Wireless'].decode()).read())
 except:wireless=True
+
+db.close()
+config.close()
+
 network.WLAN(network.AP_IF).config(essid=hssid,authmode=4 if hpswd else 0,password=hpswd)
-#network.phy_mode(1)
 if wireless:
     network.WLAN(network.STA_IF).active(True)
     network.WLAN(network.AP_IF).active(True)
