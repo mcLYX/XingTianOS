@@ -17,7 +17,7 @@ else:
 import dstxt,key4,zlib,touch,time,lstui,dscn,pbmds,framebuf,machine
 
 d='../$DAT$/Melopy/'
-maxload=20 #最大加载note数
+maxload=20#最大加载note数
 c=color(128,255,255)#蓝色
 c2=color(255,255,128)#黄色
 c3=color(255,64,64)#红
@@ -33,7 +33,6 @@ diffc=0#难度
 ctrl=lambda com:uart.write(bytes((0x7e,0xff,0x06))+com+bytes([0xef]))#控制命令
 stop=lambda s=1:ctrl(bytes((0x0D+s,0x00,0x00,0x00)))#暂停
 vol=lambda value=15:ctrl(bytes((0x06,0x00,0x00,value)))#音量
-lennote=lambda:sum(len(i) for i in notes)#获取场上note数量
 
 def play(song,num=0):
     try:
@@ -44,13 +43,14 @@ def play(song,num=0):
         pass
 
 def init():
-    global notes,record,prskey,keystat,holds,hitfb,playing,accu
+    global notes,record,prskey,keystat,holds,hitfb,playing,accu,lennote
     notes=[[],[],[],[]]
-    record=[0,0,0,0,0,0]#P/G/B/M/maxCombo/curCombo
-    prskey,keystat=[0,0,0,0],[0,0,0,0]#按住和刚被按下的按键？
-    holds=[0,0,0,0]#正在按长条？
+    record=[0]*6#P/G/B/M/maxCombo/curCombo
+    prskey,keystat=[0]*4,[0]*4#按住和刚被按下的按键？
+    holds=[0]*4#正在按长条？
     hitfb=[]#打击判定提醒 [text,time]
     playing=0#音乐已播放？
+    lennote=maxload#场上note数
     accu='100.00%'#ACC
 
 def acc():#更新ACC
@@ -106,7 +106,7 @@ def shownote(t):#显示画面
     scr.s(0)
 
 def dnote(t,col,reason):#记录并删除某轨道最近的note
-    global hitfb
+    global hitfb,end,lennote
     reason%=4
     record[reason]+=1
     acc()
@@ -114,6 +114,7 @@ def dnote(t,col,reason):#记录并删除某轨道最近的note
     record[5]=record[5]+1 if reason<=1 else 0
     record[4]=max(record[4],record[5])
     del notes[col][0]
+    lennote-=1-loadnote()
 
 def chktp(t,i):#检查Tap和Hold头判
     global hitfb
@@ -190,16 +191,15 @@ while 1:
     scr.s()
     time.sleep(1)
     vol(volume)
-    start=time.ticks_ms()+1024
+    for i in range(maxload):loadnote()
     gc.collect()
+    start=time.ticks_ms()+1024
     while 1:
         #fpsticker=time.ticks_us()
         curtime=int((time.ticks_ms()-start)*dspbuf)
-        notelen=lennote()
-        if maxload-notelen:load=loadnote()
         checkotn(curtime)
         shownote(curtime)
-        if not(load or notelen):
+        if lennote==0:
             time.sleep(1)
             break
         if not playing and curtime>delay:
