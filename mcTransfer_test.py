@@ -25,7 +25,7 @@ for f in flist:
         print('不支持此谱面:',f)
         continue
 
-    offset1=0
+    offset1,offset=0,0
     decode=[]
     try:
         if 'offset' in b['note'][-1]:
